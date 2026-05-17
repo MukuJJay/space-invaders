@@ -1,0 +1,10 @@
+build/
+*.o
+*.d
+*.out
+*.exe
+.cache/
+.vscode/
+.zed/
+.codex
+.codex/

@@ -1,0 +1,44 @@
+#include "spaceship.hpp"
+#include "laser.hpp"
+#include <raylib.h>
+
+
+Spaceship::Spaceship(){
+    image = LoadTexture("assets/spaceship.png");
+    position.x = (GetScreenWidth() - image.width) / 2.0;
+    position.y = (GetScreenHeight() - image.height * 2.0);
+    lastFireTime = -0.35;
+}
+
+Spaceship::~Spaceship(){
+    UnloadTexture(image);
+}
+
+void Spaceship::Draw(){
+    DrawTextureV(image, position, WHITE);
+}
+
+void Spaceship::MoveLeft(){
+    position.x -= 7;
+    if (position.x < 0){
+        position.x = 0;
+    }
+}
+
+void Spaceship::MoveRight(){
+    position.x += 7;
+    if (position.x > (GetScreenWidth() - image.width)){
+        position.x = (GetScreenWidth() - image.width);
+    }
+}
+
+void Spaceship::FireLaser(){
+    if(GetTime() - lastFireTime >= 0.35){
+        lasers.push_back(Laser({position.x + (image.width / 2.0f) - 2, position.y}, -7));
+        lastFireTime = GetTime();
+    }
+}
+
+Rectangle Spaceship::GetRect(){
+    return {position.x, position.y, float(image.width), float(image.height)};
+}
