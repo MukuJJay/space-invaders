@@ -7,6 +7,14 @@
 
 
 Game::Game(){
+    Init();
+}
+
+Game::~Game(){
+    Alien::UnloadImages();
+}
+
+void Game::Init(){
     alienDirection = 1;
     lastAlienLaserShotAt = 0.0;
     CreateAliens();
@@ -19,13 +27,18 @@ Game::Game(){
     run = true;
 }
 
-Game::~Game(){
-    Alien::UnloadImages();
+void Game::Reset(){
+    aliens.clear();
+    alienLasers.clear();
+
+    obstacles.clear();
+
+    spaceship.Reset();
+
+    mysteryship.alive = false;
 }
 
 void Game::Draw(){
-    if(!run) return;
-
     spaceship.Draw();
 
     for (Laser& laser: spaceship.lasers){
@@ -48,7 +61,10 @@ void Game::Draw(){
 }
 
 void Game::Update(){
-    if(!run) return;
+    if(!run) {
+        lastmysteryshipSpawnedAt = GetTime();
+        return;
+    };
 
     for (Laser& laser: spaceship.lasers){
         laser.Update();
@@ -74,6 +90,14 @@ void Game::Update(){
 }
 
 void Game::HandleInput(){
+    if(!run){
+        if(IsKeyDown(KEY_ENTER)){
+            Reset();
+            Init();
+        }
+        return;
+    };
+
     if (IsKeyDown(KEY_A)){
         spaceship.MoveLeft();
     }
