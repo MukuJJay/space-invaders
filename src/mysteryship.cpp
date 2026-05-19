@@ -5,6 +5,8 @@
 MysteryShip::MysteryShip(){
     image = LoadTexture("assets/mystery.png");
     alive = false;
+    position = {0.0f, 0.0f};
+    speed = 0;
 }
 
 MysteryShip::~MysteryShip(){
@@ -38,7 +40,9 @@ void MysteryShip::Update(){
 }
 
 void MysteryShip::Draw(){
-    DrawTextureV(image, position, WHITE);
+    if(alive){
+        DrawTextureV(image, position, WHITE);
+    }
 }
 
 Rectangle MysteryShip::GetRect(){

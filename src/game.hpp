@@ -15,23 +15,29 @@ class Game{
         void Draw();
         void Update();
         void HandleInput();
+        bool run;
 
     private:
-        Spaceship spaceship;
+        void MysteryshipManage();
+        void CheckCollisions();
         void DeleteInactiveLaser();
-        std::vector<Obstacle> obstacles;
         void CreateObstacles();
-        std::vector<Alien> aliens;
         void CreateAliens();
-        int alienDirection;
         void MoveAliens();
         void MoveAliensDown(int distance);
         void AlienShootLaser();
+        void Init();
+        void Reset();
+        void GameOver();
+        Spaceship spaceship;
+        std::vector<Obstacle> obstacles;
+        std::vector<Alien> aliens;
+        int alienDirection;
         std::vector<Laser> alienLasers;
         constexpr static double alienLaserShootInterval = 0.35f;
         double lastAlienLaserShotAt;
         MysteryShip mysteryship;
         double mysteryShipSpawnInterval;
         double lastmysteryshipSpawnedAt;
-        void MysteryshipManage();
+        int lives;
 };

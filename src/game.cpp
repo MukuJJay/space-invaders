@@ -14,6 +14,9 @@ Game::Game(){
     CreateObstacles();
 
     lastmysteryshipSpawnedAt = 0.0;
+
+    lives = 3;
+    run = true;
 }
 
 Game::~Game(){
@@ -21,6 +24,8 @@ Game::~Game(){
 }
 
 void Game::Draw(){
+    if(!run) return;
+
     spaceship.Draw();
 
     for (Laser& laser: spaceship.lasers){
@@ -43,10 +48,11 @@ void Game::Draw(){
 }
 
 void Game::Update(){
+    if(!run) return;
+
     for (Laser& laser: spaceship.lasers){
         laser.Update();
     }
-
 
     MoveAliens();
 
@@ -59,6 +65,12 @@ void Game::Update(){
     DeleteInactiveLaser();
 
     MysteryshipManage();
+
+    CheckCollisions();
+
+    if(lives == 0){
+        GameOver();
+    }
 }
 
 void Game::HandleInput(){
@@ -170,4 +182,85 @@ void Game::MysteryshipManage(){
     }
 
     mysteryship.Update();
+}
+
+void Game::CheckCollisions(){
+    //Spaceship laser collisions
+    for(Laser& laser: spaceship.lasers){
+        //Spaceship laser collision with aliens
+        for(auto it = aliens.begin(); it != aliens.end();){
+            if(CheckCollisionRecs(it -> GetRect(), laser.GetRect())){
+                it = aliens.erase(it);
+                laser.active = false;
+            }
+            else{
+                ++it;
+            }
+        }
+
+        //Spaceship laser collision with obstacles
+        for(auto obs = obstacles.begin(); obs != obstacles.end(); ++obs){
+            for(auto block = obs->blocks.begin(); block != obs->blocks.end();){
+                if(CheckCollisionRecs(block -> GetRect(), laser.GetRect())){
+                    block = obs->blocks.erase(block);
+                    laser.active = false;
+                }
+                else{
+                    ++block;
+                }
+            }
+        }
+
+        //Spaceship laser collision with mysteryship
+        if(CheckCollisionRecs(laser.GetRect(), mysteryship.GetRect())){
+            mysteryship.alive = false;
+            laser.active = false;;
+        }
+    }
+
+    //Alien laser collisions
+    for(Laser& laser: alienLasers){
+        //Collision with spaceship
+        if(CheckCollisionRecs(laser.GetRect(), spaceship.GetRect())){
+            laser.active = false;
+            lives --;
+        }
+
+        //Collision with obstacles
+        for(auto obs = obstacles.begin(); obs != obstacles.end(); ++obs){
+            for(auto block = obs->blocks.begin(); block != obs->blocks.end();){
+                if(CheckCollisionRecs(block -> GetRect(), laser.GetRect())){
+                    block = obs->blocks.erase(block);
+                    laser.active = false;
+                }
+                else{
+                    ++block;
+                }
+            }
+        }
+    }
+
+    //Alien Collisions
+    for(Alien& alien: aliens){
+        //Collision with spaceship
+        if(CheckCollisionRecs(alien.GetRect(), spaceship.GetRect())){
+            lives --;
+        }
+
+        //Collision with obstacles
+        for(auto obs = obstacles.begin(); obs != obstacles.end(); ++obs){
+            for(auto block = obs->blocks.begin(); block != obs->blocks.end();){
+                if(CheckCollisionRecs(block -> GetRect(), alien.GetRect())){
+                    block = obs->blocks.erase(block);
+                }
+                else{
+                    ++block;
+                }
+            }
+        }
+    }
+}
+
+void Game::GameOver(){
+    run = false;
 }

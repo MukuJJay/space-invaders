@@ -9,8 +9,8 @@ class Obstacle{
         Obstacle(Vector2 position);
         void Draw();
         static std::vector<std::vector<int>> grid;
+        std::vector<Block> blocks;
 
     private:
         Vector2 position;
-        std::vector<Block> blocks;
 };
