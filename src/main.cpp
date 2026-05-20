@@ -4,10 +4,12 @@
 
 int main()
 {
+    int offset = 50;
+
     constexpr int screenWidth = 750;
     constexpr int screenHeight = 700;
 
-    InitWindow(screenWidth, screenHeight, "Space Invaders");
+    InitWindow(screenWidth + offset, screenHeight + (2 * offset), "Space Invaders");
     SetTargetFPS(60);
 
     Game game;
@@ -20,6 +22,7 @@ int main()
         ClearBackground(BLACK);
 
         game.Draw();
+        DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, YELLOW);
 
         EndDrawing();
     }

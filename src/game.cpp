@@ -25,6 +25,8 @@ void Game::Init(){
 
     lives = 3;
     run = true;
+
+    lastmysteryshipSpawnedAt = GetTime();
 }
 
 void Game::Reset(){
@@ -61,10 +63,7 @@ void Game::Draw(){
 }
 
 void Game::Update(){
-    if(!run) {
-        lastmysteryshipSpawnedAt = GetTime();
-        return;
-    };
+    if(!run) return;
 
     for (Laser& laser: spaceship.lasers){
         laser.Update();
