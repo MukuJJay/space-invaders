@@ -16,6 +16,8 @@ class Game{
         void Update();
         void HandleInput();
         bool run;
+        int lives;
+        int score;
 
     private:
         void MysteryshipManage();
@@ -39,5 +41,4 @@ class Game{
         MysteryShip mysteryship;
         double mysteryShipSpawnInterval;
         double lastmysteryshipSpawnedAt;
-        int lives;
 };

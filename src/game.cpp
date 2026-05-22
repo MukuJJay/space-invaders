@@ -25,6 +25,7 @@ void Game::Init(){
 
     lives = 3;
     run = true;
+    score = 0;
 
     lastmysteryshipSpawnedAt = GetTime();
 }
@@ -134,7 +135,7 @@ void Game::CreateObstacles(){
 
     for (int i = 0; i < 4; i++){
         float offsetX = ((i + 1) * gap) + ( i * obstacleWidth );
-        obstacles.push_back(Obstacle({offsetX, float(GetScreenHeight() - 130)}));
+        obstacles.push_back(Obstacle({offsetX, float(GetScreenHeight() - 200)}));
     }
 }
 
@@ -161,11 +162,11 @@ void Game::CreateAliens(){
 
 void Game::MoveAliens(){
     for (Alien& alien : aliens){
-        if (alien.position.x + alien.alienImages[alien.type - 1].width > GetScreenWidth()){
+        if (alien.position.x + alien.alienImages[alien.type - 1].width > GetScreenWidth() - 25){
             alienDirection = -1;
             MoveAliensDown(4);
         }
-        else if(alien.position.x < 0){
+        else if(alien.position.x < 25){
             alienDirection = 1;
             MoveAliensDown(4);
         }
@@ -215,6 +216,14 @@ void Game::CheckCollisions(){
             if(CheckCollisionRecs(it -> GetRect(), laser.GetRect())){
                 it = aliens.erase(it);
                 laser.active = false;
+
+                if(it->type == 1){
+                    score += 100;
+                }else if (it->type == 2) {
+                    score += 200;
+                }else if (it->type == 3){
+                    score += 300;
+                }
             }
             else{
                 ++it;
@@ -237,7 +246,8 @@ void Game::CheckCollisions(){
         //Spaceship laser collision with mysteryship
         if(CheckCollisionRecs(laser.GetRect(), mysteryship.GetRect())){
             mysteryship.alive = false;
-            laser.active = false;;
+            laser.active = false;
+            score += 1000;
         }
     }
 
